@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice, Ice, Maybe, A Geometric Mechanism for the Hubble Tension</title>
+    <meta name="description" content="An interactive walkthrough of Dr Mehzeb Chowdhury's braneworld hypothesis, styled after the classic Macintosh System interface.">
+
+    <!--
+    ============================================================================
+      ICE, ICE, MAYBE
+      A Geometric Mechanism for the Hubble Tension
+      Dr Mehzeb Chowdhury, June 2026.  DOI 10.5281/zenodo.20602920.  CC BY 4.0.
+    ============================================================================
+
+      An honest note to whoever is reading this source.
+
+      This visualisation accompanies a short and deliberately humble paper. It
+      began with an empty glass and a ball of ice on a hot day, and the thought
+      that the expansion of the universe might be condensation sliding along a
+      sphere, not things flying apart. That picture is only a metaphor. The
+      category error in it (assigning a global curvature to layers of melting
+      ice) was caught early and discarded. What survived was one genuine, narrow
+      question in braneworld cosmology.
+
+      THE CLAIM, stated plainly:
+      In a Randall-Sundrum (RS2) braneworld, if the higher dimensional bulk is
+      not an empty vacuum but holds matter with a power-law profile
+            rho_5(r) = rho_0 * (r_0 / r)^n,
+      then the Apostolopoulos and Tetradis (2004) "mirage" term in the modified
+      Friedmann equation no longer scales as a^-4 (ordinary dark radiation) but
+      as a^-n. For 3 < n < 4 the component dilutes faster than matter and slower
+      than radiation, and its fractional share peaks near matter-radiation
+      equality, which is close to the epoch a Hubble-tension fix must act on.
+
+      WHAT THIS DOES NOT CLAIM (read this part twice):
+        - It is not a solution to the Hubble tension.
+        - It is a background-expansion argument only. It follows H(a), not the
+          cosmic microwave background power spectrum, where these proposals
+          ultimately stand or fall.
+        - rho_5(r) is an ansatz imposed by hand, not solved from the full
+          five-dimensional field equations.
+        - The energy-density curves in Chapter 3 are illustrative. Each curve is
+          renormalised so its own peak sits near 7%, to show the SHAPE of the
+          rise, peak and fall, not a fitted amplitude.
+
+      The figures are toys with the right qualitative behaviour, nothing more.
+      If you have CLASS or CosmoMC and the inclination, the equation is yours to
+      map into an MCMC fit against Planck and the SH0ES distance ladder.
+
+      Regardless of what you find, please do let this non-physicist dreamer know.
+    ============================================================================
+    -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+    <style>
+        @font-face {
+            font-family: "Chicago";
+            src: url("data:font/woff2;base64,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") format("woff2");
+            font-weight: normal; font-style: normal; font-display: block;
+        }
+        @font-face {
+            font-family: "Monaco";
+            src: url("data:font/woff2;base64,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") format("woff2");
+            font-weight: normal; font-style: normal; font-display: block;
+        }
+
+        /* ===== 1-BIT TOKENS ===== */
+        :root {
+            --paper: #ffffff;     /* fills */
+            --ink:   #000000;     /* lines + text */
+            --grid:  rgba(0,0,0,0.14);
+            --disabled: #b8b8b8;
+            --desk-a: #000000;
+            --desk-b: #ffffff;
+        }
+        html[data-theme="dark"] {
+            --paper: #0b0b0b;
+            --ink:   #f2f2f2;
+            --grid:  rgba(242,242,242,0.16);
+            --disabled: #4a4a4a;
+            --desk-a: #f2f2f2;
+            --desk-b: #0b0b0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: "Chicago", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: var(--ink);
+            -webkit-font-smoothing: none;
+            image-rendering: pixelated;
+        }
+        body { background: var(--desk-b); }
+
+        /* classic 50% gray desktop dither */
+        .desktop {
+            position: fixed; inset: 22px 0 0 0;
+            background-color: var(--desk-b);
+            background-image:
+                linear-gradient(45deg, var(--desk-a) 25%, transparent 25%, transparent 75%, var(--desk-a) 75%),
+                linear-gradient(45deg, var(--desk-a) 25%, transparent 25%, transparent 75%, var(--desk-a) 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            opacity: 1;
+            display: flex;
+            padding: 18px;
+            z-index: 1;
+        }
+        /* soften the desktop so it reads as gray, not harsh checker */
+        .desktop::after {
+            content: ''; position: absolute; inset: 0;
+            background: var(--desk-b); opacity: 0.45; pointer-events: none;
+        }
+
+        /* ===== MENU BAR ===== */
+        .menubar {
+            position: fixed; top: 0; left: 0; right: 0; height: 22px;
+            background: var(--paper);
+            border-bottom: 2px solid var(--ink);
+            display: flex; align-items: center;
+            padding: 0 8px; gap: 2px; z-index: 100;
+            font-family: "Chicago"; font-size: 13px; user-select: none;
+        }
+        .menubar .apple { padding: 0 6px; }
+        .menubar .apple svg { width: 13px; height: 15px; fill: var(--ink); display: block; }
+        .menu-title {
+            padding: 1px 9px; height: 100%; display: flex; align-items: center;
+            cursor: pointer; user-select: none;
+        }
+        .menu-title:hover, .menu-title.open { background: var(--ink); color: var(--paper); }
+        .menu-title:hover svg, .menu-title.open svg { fill: var(--paper); }
+        .menubar .spacer { flex: 1; }
+        .menu-clock { font-family: "Monaco"; font-size: 12px; padding: 0 8px; }
+
+        /* ===== PULL-DOWN MENU ===== */
+        .dropdown {
+            position: fixed; top: 22px; left: 0; z-index: 200;
+            min-width: 210px; list-style: none;
+            background: var(--paper); border: 2px solid var(--ink);
+            box-shadow: 3px 3px 0 var(--ink); padding: 3px 0; display: none;
+            font-family: "Chicago"; font-size: 13px;
+        }
+        .dropdown.open { display: block; }
+        .dropdown li {
+            position: relative; padding: 4px 22px 4px 26px; white-space: nowrap; cursor: pointer;
+        }
+        .dropdown li:hover:not(.disabled):not(.sep) { background: var(--ink); color: var(--paper); }
+        .dropdown li.disabled { color: var(--disabled); cursor: default; }
+        .dropdown li.sep { height: 0; padding: 0; margin: 4px 8px; border-top: 1px solid var(--ink); opacity: 0.35; cursor: default; }
+        .dropdown li .chk { position: absolute; left: 9px; }
+        .dropdown li .kbd { margin-left: 28px; opacity: 0.55; float: right; font-family: "Monaco"; font-size: 11px; }
+
+        /* ===== ABOUT DIALOG ===== */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 300; display: none;
+            align-items: center; justify-content: center;
+            background-image: repeating-linear-gradient(45deg, var(--ink) 0, var(--ink) 1px, transparent 1px, transparent 3px);
+        }
+        .modal-backdrop.open { display: flex; }
+        .dialog { width: 420px; max-width: 92vw; background: var(--paper); border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+        .dialog-titlebar {
+            height: 22px; border-bottom: 2px solid var(--ink);
+            display: flex; align-items: center; justify-content: center;
+            background-image: repeating-linear-gradient(to bottom, var(--ink) 0, var(--ink) 1px, var(--paper) 1px, var(--paper) 3px);
+            background-position: 0 4px;
+        }
+        .dialog-titlebar .title { background: var(--paper); padding: 0 12px; font-size: 13px; }
+        .dialog-body { padding: 22px 24px 20px; }
+        .dialog-body .about-name { font-size: 22px; margin-bottom: 2px; }
+        .dialog-body .about-sub { font-size: 13px; font-family: "Monaco"; margin-bottom: 14px; }
+        .dialog-body p { font-size: 13px; line-height: 1.55; margin-bottom: 11px; }
+        .dialog-buttons { display: flex; justify-content: flex-end; margin-top: 18px; }
+        .dialog-buttons .btn { flex: none; padding: 6px 22px; }
+
+        /* ===== WINDOW ===== */
+        .window {
+            flex: 1; display: flex; flex-direction: column; min-width: 0;
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            box-shadow: 5px 5px 0 var(--ink);
+        }
+        .titlebar {
+            position: relative; height: 24px; flex: none;
+            border-bottom: 2px solid var(--ink);
+            display: flex; align-items: center; justify-content: center;
+            /* pinstripe racing lines */
+            background-image: repeating-linear-gradient(
+                to bottom, var(--ink) 0, var(--ink) 1px, var(--paper) 1px, var(--paper) 3px);
+            background-position: 0 4px;
+        }
+        .titlebar .title {
+            background: var(--paper); padding: 0 14px; font-size: 13px;
+            font-family: "Chicago"; line-height: 24px; z-index: 1;
+        }
+        .titlebar .box {
+            position: absolute; width: 13px; height: 13px;
+            background: var(--paper); border: 2px solid var(--ink); cursor: pointer;
+        }
+        .titlebar .closebox { left: 8px; }
+        .titlebar .zoombox { right: 8px; }
+        .titlebar .zoombox::after {
+            content: ''; position: absolute; top: 1px; left: 1px; right: 4px; bottom: 4px;
+            border: 1px solid var(--ink);
+        }
+        .titlebar .box:active { background: var(--ink); }
+
+        .window-body { flex: 1; min-height: 0; display: flex; }
+        .container { display: flex; width: 100%; min-width: 0; }
+
+        /* ===== NARRATION PANE ===== */
+        .sidebar {
+            width: 360px; min-width: 320px; flex: none;
+            background: var(--paper);
+            border-right: 2px solid var(--ink);
+            padding: 0; display: flex; flex-direction: column;
+            overflow: hidden;
+        }
+        .pane-head {
+            border-bottom: 2px solid var(--ink);
+            background-image: repeating-linear-gradient(
+                to bottom, var(--ink) 0, var(--ink) 1px, var(--paper) 1px, var(--paper) 3px);
+            background-position: 0 5px;
+            height: 22px; display: flex; align-items: center; justify-content: center;
+            flex: none;
+        }
+        .pane-head span { background: var(--paper); padding: 0 12px; font-size: 12px; }
+        .sidebar-inner { padding: 24px 26px; overflow-y: auto; display: flex; flex-direction: column; flex: 1; }
+
+        .eyebrow { font-size: 12px; letter-spacing: 0.5px; }
+        .paper-title { font-size: 12px; margin: 6px 0 18px; line-height: 1.4; }
+
+        .progress { display: flex; gap: 6px; margin-bottom: 22px; }
+        .progress span { width: 14px; height: 14px; border: 2px solid var(--ink); background: var(--paper); }
+        .progress span.done { background: var(--ink); }
+
+        .chapter-title { font-size: 26px; line-height: 1.15; margin-bottom: 16px; letter-spacing: 0.2px; }
+        .chapter-content { font-size: 14px; line-height: 1.62; margin-bottom: 22px; }
+        .chapter-content strong { font-weight: normal; text-decoration: underline; text-underline-offset: 2px; }
+        .chapter-content .warn-t, .chapter-content .good-t { font-weight: normal; background: var(--ink); color: var(--paper); padding: 1px 4px; margin: 0 1px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .chapter-content p + p { margin-top: 12px; }
+
+        .nav-buttons { display: flex; gap: 12px; margin-top: auto; padding-top: 20px; }
+
+        /* ===== MAC BUTTONS ===== */
+        .btn {
+            font-family: "Chicago"; font-size: 13px;
+            background: var(--paper); color: var(--ink);
+            border: 2px solid var(--ink); border-radius: 9px;
+            padding: 6px 16px; cursor: pointer; flex: 1;
+            transition: none;
+        }
+        .btn:active:not(:disabled) { background: var(--ink); color: var(--paper); }
+        .btn.default { box-shadow: 0 0 0 2px var(--paper), 0 0 0 4px var(--ink); }
+        .btn:disabled { color: var(--disabled); border-color: var(--disabled); cursor: default; }
+        .btn:focus-visible { outline: 2px dotted var(--ink); outline-offset: 3px; }
+
+        /* ===== MAIN VIEW ===== */
+        .main-view { flex: 1; position: relative; min-width: 0; overflow: hidden; background: var(--paper); }
+        .chapter-container {
+            position: absolute; inset: 0; padding: 26px;
+            display: flex; flex-direction: column;
+            opacity: 0; visibility: hidden;
+        }
+        .chapter-container.active { opacity: 1; visibility: visible; }
+
+        /* framed sub-window: white fill, ink border, hard offset shadow */
+        .frame {
+            background: var(--paper); border: 2px solid var(--ink);
+            box-shadow: 3px 3px 0 var(--ink);
+        }
+
+        /* ===== CHAPTER 1: DIALS ===== */
+        .dials-wrap { display: flex; flex-direction: column; height: 100%; gap: 22px; }
+        .dials-container { display: flex; justify-content: center; align-items: center; flex: 1; gap: 36px; }
+        .dial-wrapper { padding: 26px 30px; display: flex; flex-direction: column; align-items: center; width: 280px; }
+        .dial-title { font-size: 16px; margin-bottom: 4px; }
+        .dial-sub { font-size: 12px; font-family: "Monaco"; letter-spacing: 0.4px; margin-bottom: 20px; }
+        .dial { width: 190px; height: 190px; position: relative; display: flex; justify-content: center; align-items: center; color: var(--ink); }
+        .dial svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .dial-center { position: absolute; top: 50%; left: 50%; width: 11px; height: 11px; background: var(--ink); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; }
+        .dial-needle { position: absolute; bottom: 50%; left: calc(50% - 1.5px); width: 3px; height: 70px; background: var(--ink); transform-origin: bottom center; z-index: 1; }
+        .dial-value-text { margin-top: 22px; font-family: "Monaco"; font-size: 21px; }
+        .tension-bar { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 16px 26px; margin: 0 auto; max-width: 660px; width: 100%; flex-wrap: wrap; }
+        .tension-bar .t-num { font-family: "Monaco"; font-size: 19px; background: var(--ink); color: var(--paper); padding: 2px 8px; }
+        .tension-bar .t-label { font-size: 14px; }
+
+        /* ===== CANVAS CONTAINERS ===== */
+        .canvas-container { width: 100%; flex: 1; min-height: 0; position: relative; overflow: hidden; }
+        canvas#threejs-canvas, canvas#threejs-canvas-3 { position: absolute; inset: 0; width: 100% !important; height: 100% !important; display: block; outline: none; }
+
+        .control-bar { margin-top: 16px; padding: 16px 22px; display: flex; flex-direction: column; gap: 12px; }
+        .control-head { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+        .control-label { font-size: 15px; }
+        .control-value { font-size: 22px; font-family: "Monaco"; background: var(--ink); color: var(--paper); padding: 0 8px; }
+        .slider-ticks { display: flex; justify-content: space-between; font-size: 12px; font-family: "Monaco"; padding: 0 2px; }
+
+        /* ===== MAC SLIDER ===== */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none; width: 100%; height: 18px;
+            background: transparent; cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 6px; background: var(--paper); border: 2px solid var(--ink);
+        }
+        input[type="range"]::-moz-range-track { height: 6px; background: var(--paper); border: 2px solid var(--ink); }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 14px; height: 22px; margin-top: -10px;
+            background: var(--paper); border: 2px solid var(--ink);
+            box-shadow: 1px 1px 0 var(--ink);
+        }
+        input[type="range"]::-webkit-slider-thumb:active { background: var(--ink); }
+        input[type="range"]::-moz-range-thumb { width: 14px; height: 22px; background: var(--paper); border: 2px solid var(--ink); border-radius: 0; box-shadow: 1px 1px 0 var(--ink); }
+        input[type="range"]:focus-visible { outline: 2px dotted var(--ink); outline-offset: 2px; }
+
+        .verdict { font-size: 13.5px; line-height: 1.5; padding: 11px 14px; border: 2px solid var(--ink); min-height: 56px; display: flex; flex-direction: column; justify-content: center; }
+        .verdict.highlight { background: var(--ink); color: var(--paper); }
+        .verdict.hatch {
+            background-image: repeating-linear-gradient(45deg, var(--ink) 0, var(--ink) 1px, transparent 1px, transparent 5px);
+        }
+        .verdict .v-head { font-size: 13px; margin-bottom: 3px; }
+
+        /* ===== CHAPTER 3 SPLIT ===== */
+        .split-view { display: flex; flex-direction: column; height: 100%; gap: 16px; }
+        .threejs-half { flex: 0 0 32%; position: relative; min-height: 150px; }
+        .chart-half { flex: 1; padding: 16px 22px 14px; display: flex; flex-direction: column; min-height: 0; }
+        .chart-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; gap: 12px; flex-wrap: wrap; }
+        .chart-label { font-size: 14px; }
+        .legend { display: flex; gap: 18px; font-size: 13px; font-family: "Monaco"; letter-spacing: 0.4px; }
+        .legend i { display: inline-block; width: 24px; height: 0; border-top: 2px solid var(--ink); margin-right: 7px; vertical-align: middle; }
+        .legend .l-good i { border-top-style: dashed; }
+        .chart-wrapper { position: relative; flex: 1; width: 100%; min-height: 0; }
+        .distinct { font-family: "Monaco"; font-size: 13px; letter-spacing: 0.4px; margin-top: 8px; text-align: right; }
+        .distinct b { background: var(--ink); color: var(--paper); padding: 0 4px; margin: 0 2px; }
+
+        /* ===== CHAPTER 4 ===== */
+        .closing { display: flex; flex-direction: column; justify-content: center; height: 100%; max-width: 760px; margin: 0 auto; gap: 18px; padding: 14px; overflow-y: auto; }
+        .closing .lede { font-size: 15px; line-height: 1.55; }
+        .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .card { padding: 16px 16px; }
+        .card .c-eyebrow { font-size: 11px; border-bottom: 2px solid var(--ink); padding-bottom: 6px; margin-bottom: 10px; }
+        .card .c-body { font-size: 13px; line-height: 1.55; }
+        .card .c-body b { background: var(--ink); color: var(--paper); padding: 1px 4px; margin: 0 1px; font-weight: normal; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .question { font-size: 14px; line-height: 1.5; padding: 16px 20px; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); }
+        .credit { font-size: 12px; line-height: 1.7; }
+        .credit a { color: var(--ink); }
+        .credit .sign { display: inline-block; background: var(--ink); color: var(--paper); padding: 1px 5px; margin-top: 4px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 980px) {
+            .sidebar { width: 300px; min-width: 280px; }
+            .dials-container { gap: 20px; }
+            .dial-wrapper { width: 240px; padding: 20px; }
+            .dial { width: 160px; height: 160px; }
+            .dial-needle { height: 58px; }
+            .cards { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 760px) {
+            html, body { overflow: auto; }
+            .menubar .menu-item:not(#themeToggle):not(.menu-clock) { display: none; }
+            .desktop { position: static; inset: auto; min-height: calc(100vh - 22px); padding: 10px; }
+            .window-body { flex-direction: column; }
+            .container { flex-direction: column; }
+            .sidebar { width: 100%; min-width: 0; border-right: none; border-bottom: 2px solid var(--ink); }
+            .sidebar-inner { max-height: none; }
+            .main-view { height: 760px; flex: none; }
+            .dials-container { flex-direction: column; gap: 16px; }
+            .threejs-half { flex: 0 0 26%; min-height: 150px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <!-- MENU BAR -->
+    <!--
+      The menu bar is functional, in keeping with the spirit of the original
+      Macintosh System. Decorative system items (Undo, Cut, Copy, Paste) are
+      shown greyed-out, exactly as a real application leaves commands it cannot
+      perform. The genuinely useful menus are Chapter (jump anywhere) and View
+      (invert the display, pause motion, reset the model to n = 3.5).
+    -->
+    <div class="menubar" id="menubar">
+        <span class="menu-title apple" data-menu="apple" title="About">
+            <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11.2 8.6c0-1.5 1.2-2.2 1.25-2.3-0.68-1-1.75-1.15-2.13-1.16-0.9-0.09-1.77 0.53-2.23 0.53-0.46 0-1.18-0.52-1.94-0.5-1 0.01-1.92 0.58-2.43 1.48-1.04 1.8-0.27 4.46 0.74 5.92 0.49 0.71 1.08 1.51 1.85 1.48 0.74-0.03 1.02-0.48 1.92-0.48 0.9 0 1.15 0.48 1.93 0.46 0.8-0.01 1.3-0.72 1.79-1.44 0.56-0.82 0.79-1.62 0.8-1.66-0.02-0.01-1.54-0.59-1.55-2.34zM9.78 4.18c0.41-0.5 0.69-1.19 0.61-1.88-0.59 0.02-1.3 0.39-1.72 0.89-0.38 0.44-0.71 1.14-0.62 1.82 0.66 0.05 1.33-0.33 1.73-0.83z"/></svg>
+        </span>
+        <span class="menu-title" data-menu="file">File</span>
+        <span class="menu-title" data-menu="edit">Edit</span>
+        <span class="menu-title" data-menu="chapter">Chapter</span>
+        <span class="menu-title" data-menu="view">View</span>
+        <span class="spacer"></span>
+        <span class="menu-clock" id="clock">12:00 AM</span>
+    </div>
+    <ul class="dropdown" id="dropdown"></ul>
+
+    <!-- ABOUT DIALOG (Apple menu) -->
+    <div class="modal-backdrop" id="aboutModal">
+        <div class="dialog">
+            <div class="dialog-titlebar"><span class="title">About</span></div>
+            <div class="dialog-body">
+                <div class="about-name">Ice, Ice, Maybe</div>
+                <div class="about-sub">A Geometric Mechanism for the Hubble Tension</div>
+                <p>Dr Mehzeb Chowdhury, June 2026. CC BY 4.0.</p>
+                <p>An interactive walkthrough for non-experts of a modest braneworld hypothesis. It started with a ball of ice in a glass on a hot day, and the thought that cosmic expansion might be condensation sliding along a sphere. That was only a metaphor, but a real question survived it.</p>
+                <p>This is a background-expansion argument only. It tracks H(a), not the cosmic microwave background. The math works, and the equation remains for anyone to test.</p>
+                <div class="dialog-buttons"><button class="btn default" id="aboutOk">OK</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DESKTOP -->
+    <div class="desktop">
+        <div class="window">
+            <div class="titlebar">
+                <span class="box closebox" id="closebox" title="Close"></span>
+                <span class="title">Ice, Ice, Maybe</span>
+                <span class="box zoombox" title="Zoom"></span>
+            </div>
+            <div class="window-body">
+                <div class="container">
+                    <!-- NARRATION PANE -->
+                    <aside class="sidebar">
+                        <div class="pane-head"><span id="paneHead">Chapter 1 of 4</span></div>
+                        <div class="sidebar-inner">
+                            <div class="paper-title">A geometric mechanism for the Hubble tension</div>
+                            <div class="progress" id="progress"><span></span><span></span><span></span><span></span></div>
+                            <h1 class="chapter-title" id="chapterTitle">The cosmic speeding ticket</h1>
+                            <div class="chapter-content" id="chapterContent"></div>
+                            <div class="nav-buttons">
+                                <button class="btn" id="prevBtn" disabled>Previous</button>
+                                <button class="btn default" id="nextBtn">Next</button>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- VIEWER -->
+                    <main class="main-view">
+                        <!-- Chapter 1 -->
+                        <!--
+                          The two dials are the Hubble tension made literal: one "radar gun"
+                          reads the early universe (Planck, the cosmic microwave background,
+                          ~67.4), the other reads the local one (the SH0ES distance ladder,
+                          ~73.0). Both are real, careful measurements. They simply will not
+                          meet. The needle jitter on the local dial is illustrative, not a
+                          claim about its error bars.
+                        -->
+                        <section class="chapter-container active" id="chapter1">
+                            <div class="dials-wrap">
+                                <div class="dials-container">
+                                    <div class="dial-wrapper frame">
+                                        <div class="dial-title">Ancient Light</div>
+                                        <div class="dial-sub">CMB · Planck</div>
+                                        <div class="dial">
+                                            <svg viewBox="0 0 190 190" aria-hidden="true">
+                                                <path d="M 32 150 A 79 79 0 1 1 158 150" fill="none" stroke="currentColor" stroke-opacity="0.85" stroke-width="2"/>
+                                                <g id="ticks1"></g>
+                                            </svg>
+                                            <div class="dial-center"></div>
+                                            <div class="dial-needle" id="needle1"></div>
+                                        </div>
+                                        <div class="dial-value-text" id="val1">67.4 km/s/Mpc</div>
+                                    </div>
+                                    <div class="dial-wrapper frame">
+                                        <div class="dial-title">Nearby Stars</div>
+                                        <div class="dial-sub">Ladder · SH0ES</div>
+                                        <div class="dial">
+                                            <svg viewBox="0 0 190 190" aria-hidden="true">
+                                                <path d="M 32 150 A 79 79 0 1 1 158 150" fill="none" stroke="currentColor" stroke-opacity="0.85" stroke-width="2"/>
+                                                <g id="ticks2"></g>
+                                            </svg>
+                                            <div class="dial-center"></div>
+                                            <div class="dial-needle" id="needle2"></div>
+                                        </div>
+                                        <div class="dial-value-text" id="val2">73.0 km/s/Mpc</div>
+                                    </div>
+                                </div>
+                                <div class="tension-bar frame">
+                                    <span class="t-label">The gap:</span>
+                                    <span class="t-num" id="tensionNum">≈ 5.6 km/s/Mpc</span>
+                                    <span class="t-label">won't reconcile, the Hubble tension</span>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Chapter 2 -->
+                        <!--
+                          The wireframe sphere is the warped bulk; the small bubble at its
+                          centre is our brane. The drifting points are the bulk matter. As
+                          n rises, the fog is redrawn so it crowds toward the brane: this is
+                          a VISUAL stand-in for a steeper rho_5(r) ~ (r_0/r)^n profile, not a
+                          literal solution of the field equations. The only honest physics
+                          here is the verdict text, which classifies what a^-n does for a
+                          given n (matter-like, useful window, or plain dark radiation).
+                        -->
+                        <section class="chapter-container" id="chapter2">
+                            <div class="canvas-container frame" id="c2-container"><canvas id="threejs-canvas"></canvas></div>
+                            <div class="control-bar frame">
+                                <div class="control-head">
+                                    <span class="control-label">Steepness of bulk layering, exponent n</span>
+                                    <span class="control-value" id="nValueC2">3.5</span>
+                                </div>
+                                <input type="range" id="nSliderC2" min="2.0" max="5.0" step="0.1" value="3.5" aria-label="Bulk density exponent n">
+                                <div class="slider-ticks"><span>2.0 matter</span><span>3.0</span><span>4.0 radiation</span><span>5.0</span></div>
+                                <div class="verdict" id="verdictC2"></div>
+                            </div>
+                        </section>
+
+                        <!-- Chapter 3 -->
+                        <!--
+                          This is the paper's Figure 2, made interactive. The solid line is
+                          the bare power law f(a); the dashed line is the same component once
+                          a localised shell with a sharp cut-off is imposed. The solid curve
+                          dawdles past recombination (the honest problem). The dashed curve
+                          falls off a cliff just after the shell (the conjectured escape).
+                          Both peaks are renormalised to ~7%: the message is the SHAPE and
+                          how far past recombination the component persists, not the height.
+                          The torus above is that shell; the marching square is the brane
+                          sweeping through it, kept in sync with the playhead on the chart.
+                        -->
+                        <section class="chapter-container" id="chapter3">
+                            <div class="split-view">
+                                <div class="threejs-half frame" id="c3-container"><canvas id="threejs-canvas-3"></canvas></div>
+                                <div class="chart-half frame">
+                                    <div class="chart-head">
+                                        <span class="chart-label">Share of total energy density (%) · vs scale factor a</span>
+                                        <div class="legend">
+                                            <span class="l-warn"><i></i>Bare power law</span>
+                                            <span class="l-good"><i></i>With cut-off shell</span>
+                                        </div>
+                                    </div>
+                                    <div class="chart-wrapper"><canvas id="energyChart"></canvas></div>
+                                    <div class="control-head" style="margin-top:10px;">
+                                        <span class="control-label">Exponent n</span>
+                                        <span class="control-value" id="nValueC3" style="font-size:16px;">3.5</span>
+                                    </div>
+                                    <input type="range" id="nSliderC3" min="3.0" max="4.0" step="0.05" value="3.5" style="margin-top:6px;" aria-label="Bulk density exponent n">
+                                    <div class="distinct" id="distinctC3"></div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Chapter 4 -->
+                        <section class="chapter-container" id="chapter4">
+                            <div class="closing">
+                                <p class="lede">No illusions, and no grand claims of solving the Hubble tension. What remains is an equation, an honest set of caveats, and an open question for anyone with the tools to test it.</p>
+                                <div class="cards">
+                                    <div class="card frame">
+                                        <div class="c-eyebrow">The Prediction</div>
+                                        <div class="c-body">A structured bulk imprints a dark-radiation term scaling as <b>a^-n</b>, not the <b>a^-4</b> of an empty bulk. For <b>3 &lt; n &lt; 4</b> it leaves a distinct shape evolving by <b>(3.1)^(4-n)</b> between equality and recombination.</div>
+                                    </div>
+                                    <div class="card frame">
+                                        <div class="c-eyebrow">The Honest Catch</div>
+                                        <div class="c-body">This is a <b>background-expansion argument only</b>, tracking H(a), not the CMB power spectrum, where the proposals stand or fall. The profile <b>p5 ~ (r0/r)^n</b> is an ansatz imposed, not solved from the 5D field equations.</div>
+                                    </div>
+                                    <div class="card frame">
+                                        <div class="c-eyebrow">Not Quite EDE</div>
+                                        <div class="c-body">Early Dark Energy redshifts away <b>faster</b> than radiation after its peak. A bare power law with 3 &lt; n &lt; 4 dilutes more <b>slowly</b>, so it resembles EDE in name, not behaviour, unless the cut-off shell is engineered to mimic it.</div>
+                                    </div>
+                                </div>
+                                <div class="question">In a Randall–Sundrum braneworld, assuming a power-law distribution for the bulk matter density, could the resulting generalised dark radiation, given a suitably structured bulk, behave in a way relevant to the Hubble tension?</div>
+                                <div class="credit">
+                                    Dr Mehzeb Chowdhury · June 2026 · CC BY 4.0<br>
+                                    Builds on the modified Friedmann equation of Apostolopoulos &amp; Tetradis (2004).
+                                    DOI: <a href="https://doi.org/10.5281/zenodo.20602920" target="_blank" rel="noopener">10.5281/zenodo.20602920</a><br>
+                                    <span class="sign">Regardless of what you find, please do let this non-physicist dreamer know.</span>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // STATE
+        // ============================================================
+        let currentChapter = 1;
+        const totalChapters = 4;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let nValue = 3.5;
+
+        const A_EQ = 1 / 3400, A_REC = 1 / 1100, A_MIN = 1e-5, A_MAX = 1.0;
+
+        let ch2Scene, ch2Camera, ch2Renderer, ch2Controls, ch2BubbleMesh, ch2ParticleSystem, ch2Bulk;
+        let ch2BubbleBaseScale = 1;
+        let ch3Scene, ch3Camera, ch3Renderer, ch3Shell, ch3Bubble;
+        let ch3SweepLogA = -5;
+        let energyChart, ditherPattern;
+        let animating = !reduceMotion;   // runtime motion toggle (View > Animation)
+
+        // ============================================================
+        // THEME
+        // ============================================================
+        function inkColor()  { return getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(); }
+        function paperColor(){ return getComputedStyle(document.documentElement).getPropertyValue('--paper').trim(); }
+        function gridColor() { return getComputedStyle(document.documentElement).getPropertyValue('--grid').trim(); }
+
+        function isDark() { return document.documentElement.getAttribute('data-theme') === 'dark'; }
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            recolorThree();
+            styleChart();
+        }
+        function toggleTheme() { setTheme(isDark() ? 'light' : 'dark'); }
+
+        function recolorThree() {
+            const ink = inkColor();
+            const set = (m, o) => { if (m) { m.color.set(ink); if (o !== undefined) m.opacity = o; } };
+            if (ch2Bulk) set(ch2Bulk.material, 0.16);
+            if (ch2BubbleMesh) set(ch2BubbleMesh.material);
+            if (ch2ParticleSystem) set(ch2ParticleSystem.material, 0.6);
+            if (ch3Shell) set(ch3Shell.material, 0.2);
+            if (ch3Bubble) set(ch3Bubble.material);
+            if (ch2Renderer && ch2Scene) ch2Renderer.render(ch2Scene, ch2Camera);
+            if (ch3Renderer && ch3Scene) ch3Renderer.render(ch3Scene, ch3Camera);
+        }
+
+        // ============================================================
+        // PHYSICS
+        // ------------------------------------------------------------
+        // A toy background-expansion model, not a Boltzmann solve.
+        //   fRaw(a,n): the bulk component's share of the energy budget,
+        //     rho_DR ~ a^-n over (matter a^-3 + radiation a^-4). It peaks
+        //     near matter-radiation equality, exactly as the paper argues.
+        //   cutoff(a): the localised shell. A sharp logistic switch just
+        //     past equality, standing in for a bulk profile with a hard
+        //     edge, so the brane "falls off a cliff" once it sweeps past.
+        //   buildCurves(n): renormalises each peak to ~7%. The amplitude
+        //     is illustrative; only the shape and persistence are meant.
+        // ============================================================
+        function fRaw(a, n) { return Math.pow(a, -n) / (Math.pow(a, -3) + A_EQ * Math.pow(a, -4)); }
+        function peakRaw(n) { let p = 0; for (let i = 0; i <= 2000; i++) { const a = Math.pow(10, -5 + 5 * i / 2000); p = Math.max(p, fRaw(a, n)); } return p; }
+        function cutoff(a) { const aCut = A_EQ * 1.5; return 1 / (1 + Math.pow(a / aCut, 8)); }
+        function buildCurves(n) {
+            const norm = 0.07 / peakRaw(n);
+            const bare = [], cut = [], N = 160;
+            for (let i = 0; i <= N; i++) {
+                const logA = -5 + 5 * i / N, a = Math.pow(10, logA);
+                const raw = fRaw(a, n) * norm * 100;
+                bare.push({ x: a, y: raw }); cut.push({ x: a, y: raw * cutoff(a) });
+            }
+            return { bare, cut };
+        }
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        function init() {
+            buildDialTicks();
+            setupNavigation();
+            setupSliders();
+            setupMenus();
+            startClock();
+            updateChapter(1);
+            setTimeout(() => {
+                initChapter2Scene();
+                initChapter3Scene();
+                initChart();
+                setTheme('light');
+                applyN(nValue);
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+            requestAnimationFrame(animate);
+        }
+        document.addEventListener('DOMContentLoaded', init);
+
+        // ============================================================
+        // MENU BAR: collapsible pull-down menus with working commands.
+        // Greyed items are intentionally inert, the way a classic Mac app
+        // shows commands it cannot currently perform.
+        // ============================================================
+        const DOI_URL = 'https://doi.org/10.5281/zenodo.20602920';
+        function menuData(name) {
+            switch (name) {
+                case 'apple': return [
+                    { label: 'About Ice, Ice, Maybe...', action: 'about' },
+                    { sep: true },
+                    { label: 'A non-physicist\u2019s inquiry', disabled: true }
+                ];
+                case 'file': return [
+                    { label: 'View Paper (DOI)...', action: 'doi' },
+                    { sep: true },
+                    { label: 'Print...', disabled: true, kbd: '\u2318P' },
+                    { label: 'Close', disabled: true, kbd: '\u2318W' }
+                ];
+                case 'edit': return [
+                    { label: 'Undo', disabled: true, kbd: '\u2318Z' },
+                    { sep: true },
+                    { label: 'Cut', disabled: true, kbd: '\u2318X' },
+                    { label: 'Copy', disabled: true, kbd: '\u2318C' },
+                    { label: 'Paste', disabled: true, kbd: '\u2318V' }
+                ];
+                case 'chapter': return [
+                    { label: '1. The Cosmic Speeding Ticket', action: 'ch1', check: currentChapter === 1 },
+                    { label: '2. The Layered Bulk', action: 'ch2', check: currentChapter === 2 },
+                    { label: '3. Rise, Peak, and the Cliff', action: 'ch3', check: currentChapter === 3 },
+                    { label: '4. The Open Question', action: 'ch4', check: currentChapter === 4 },
+                    { sep: true },
+                    { label: 'Previous', action: 'prev', disabled: currentChapter === 1, kbd: '\u2190' },
+                    { label: 'Next', action: 'next', disabled: currentChapter === totalChapters, kbd: '\u2192' }
+                ];
+                case 'view': return [
+                    { label: 'Invert Video', action: 'invert', check: isDark() },
+                    { label: 'Animation', action: 'motion', check: animating },
+                    { sep: true },
+                    { label: 'Reset Model (n = 3.5)', action: 'reset' }
+                ];
+            }
+            return [];
+        }
+
+        function runAction(a) {
+            switch (a) {
+                case 'about': document.getElementById('aboutModal').classList.add('open'); break;
+                case 'doi': window.open(DOI_URL, '_blank', 'noopener'); break;
+                case 'ch1': updateChapter(1); break;
+                case 'ch2': updateChapter(2); break;
+                case 'ch3': updateChapter(3); break;
+                case 'ch4': updateChapter(4); break;
+                case 'prev': if (currentChapter > 1) updateChapter(currentChapter - 1); break;
+                case 'next': if (currentChapter < totalChapters) updateChapter(currentChapter + 1); break;
+                case 'invert': toggleTheme(); break;
+                case 'motion': setAnimating(!animating); break;
+                case 'reset': applyN(3.5); break;
+            }
+        }
+
+        function setAnimating(on) {
+            animating = on;
+            if (ch2Controls) ch2Controls.autoRotate = on;
+        }
+
+        let openMenuName = null;
+        function setupMenus() {
+            const bar = document.getElementById('menubar');
+            const dd = document.getElementById('dropdown');
+            bar.querySelectorAll('.menu-title').forEach(t => {
+                t.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const name = t.getAttribute('data-menu');
+                    (openMenuName === name) ? closeMenu() : openMenu(name, t);
+                });
+                t.addEventListener('mouseenter', () => { if (openMenuName) openMenu(t.getAttribute('data-menu'), t); });
+            });
+            document.addEventListener('click', closeMenu);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeMenu(); document.getElementById('aboutModal').classList.remove('open'); } });
+            // About dialog
+            document.getElementById('aboutOk').addEventListener('click', () => document.getElementById('aboutModal').classList.remove('open'));
+            document.getElementById('aboutModal').addEventListener('click', e => { if (e.target.id === 'aboutModal') e.currentTarget.classList.remove('open'); });
+        }
+
+        function openMenu(name, titleEl) {
+            const dd = document.getElementById('dropdown');
+            document.querySelectorAll('.menu-title').forEach(t => t.classList.toggle('open', t === titleEl));
+            dd.innerHTML = '';
+            menuData(name).forEach(item => {
+                const li = document.createElement('li');
+                if (item.sep) { li.className = 'sep'; dd.appendChild(li); return; }
+                if (item.disabled) li.className = 'disabled';
+                li.innerHTML = `<span class="chk">${item.check ? '\u2713' : ''}</span>${item.label}` + (item.kbd ? `<span class="kbd">${item.kbd}</span>` : '');
+                if (!item.disabled && item.action) li.addEventListener('click', e => { e.stopPropagation(); closeMenu(); runAction(item.action); });
+                dd.appendChild(li);
+            });
+            const rect = titleEl.getBoundingClientRect();
+            dd.classList.add('open');
+            const w = dd.offsetWidth;
+            let left = rect.left;
+            if (left + w > window.innerWidth - 4) left = Math.max(2, window.innerWidth - w - 4);
+            dd.style.left = left + 'px';
+            openMenuName = name;
+        }
+        function closeMenu() {
+            const dd = document.getElementById('dropdown');
+            if (dd) dd.classList.remove('open');
+            document.querySelectorAll('.menu-title').forEach(t => t.classList.remove('open'));
+            openMenuName = null;
+        }
+
+        // ============================================================
+        // CLOCK (menu-bar, authentic touch)
+        // ============================================================
+        function startClock() {
+            const el = document.getElementById('clock');
+            const tick = () => {
+                const d = new Date();
+                let h = d.getHours(), m = d.getMinutes();
+                const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+                el.textContent = `${h}:${String(m).padStart(2, '0')} ${ap}`;
+            };
+            tick(); setInterval(tick, 1000 * 20);
+        }
+
+        // ============================================================
+        // CHAPTER 1: gauge ticks
+        // ============================================================
+        function buildDialTicks() {
+            ['ticks1', 'ticks2'].forEach(id => {
+                const g = document.getElementById(id);
+                for (let v = 60; v <= 80; v += 5) {
+                    const t = (v - 60) / 20, ang = (135 + t * 270) * Math.PI / 180;
+                    const cx = 95, cy = 95, rO = 79, rI = 69;
+                    const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    l.setAttribute('x1', cx + rO * Math.cos(ang)); l.setAttribute('y1', cy + rO * Math.sin(ang));
+                    l.setAttribute('x2', cx + rI * Math.cos(ang)); l.setAttribute('y2', cy + rI * Math.sin(ang));
+                    l.setAttribute('stroke', 'currentColor'); l.setAttribute('stroke-width', '2');
+                    g.appendChild(l);
+                }
+            });
+        }
+        function valueToAngle(v) { return -135 + ((v - 60) / 20) * 270; }
+
+        // ============================================================
+        // THREE.JS, Chapter 2
+        // ============================================================
+        function initChapter2Scene() {
+            const canvas = document.getElementById('threejs-canvas'), container = document.getElementById('c2-container');
+            ch2Scene = new THREE.Scene();
+            ch2Camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            ch2Renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            ch2Renderer.setSize(container.clientWidth, container.clientHeight);
+            ch2Camera.position.set(0, 2, 10);
+            ch2Controls = new THREE.OrbitControls(ch2Camera, ch2Renderer.domElement);
+            ch2Controls.enableDamping = true; ch2Controls.dampingFactor = 0.05; ch2Controls.enableZoom = false;
+            ch2Controls.autoRotate = animating; ch2Controls.autoRotateSpeed = 0.6;
+
+            ch2Bulk = new THREE.LineSegments(new THREE.WireframeGeometry(new THREE.SphereGeometry(4.5, 28, 28)),
+                new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.16 }));
+            ch2Scene.add(ch2Bulk);
+            ch2BubbleMesh = new THREE.Mesh(new THREE.SphereGeometry(1, 36, 36),
+                new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3, wireframe: true }));
+            ch2Scene.add(ch2BubbleMesh);
+            ch2ParticleSystem = new THREE.Points(new THREE.BufferGeometry(),
+                new THREE.PointsMaterial({ color: 0x000000, size: 0.07, transparent: true, opacity: 0.6 }));
+            ch2Scene.add(ch2ParticleSystem);
+            rebuildFog(nValue);
+        }
+        function rebuildFog(n) {
+            if (!ch2ParticleSystem) return;
+            const pts = [], concentration = Math.max(0.2, n - 1.5);
+            for (let i = 0; i < 1100; i++) {
+                const u = Math.random(), r = 0.9 + 3.5 * Math.pow(u, concentration);
+                const theta = Math.random() * 2 * Math.PI, phi = Math.acos(2 * Math.random() - 1);
+                pts.push(new THREE.Vector3(r * Math.sin(phi) * Math.cos(theta), r * Math.sin(phi) * Math.sin(theta), r * Math.cos(phi)));
+            }
+            ch2ParticleSystem.geometry.dispose();
+            ch2ParticleSystem.geometry = new THREE.BufferGeometry().setFromPoints(pts);
+            ch2ParticleSystem.material.color.set(inkColor());
+        }
+
+        // ============================================================
+        // THREE.JS, Chapter 3
+        // ============================================================
+        function initChapter3Scene() {
+            const canvas = document.getElementById('threejs-canvas-3'), container = document.getElementById('c3-container');
+            ch3Scene = new THREE.Scene();
+            ch3Camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+            ch3Renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+            ch3Renderer.setSize(container.clientWidth, container.clientHeight);
+            ch3Camera.position.set(0, 2.5, 11); ch3Camera.lookAt(0, 0, 0);
+            ch3Shell = new THREE.Mesh(new THREE.TorusGeometry(2.2, 0.55, 20, 80),
+                new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, wireframe: true }));
+            ch3Shell.rotation.x = Math.PI / 2; ch3Scene.add(ch3Shell);
+            ch3Bubble = new THREE.Mesh(new THREE.SphereGeometry(0.7, 36, 36),
+                new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.4 }));
+            ch3Scene.add(ch3Bubble);
+        }
+        function logAToX(logA) { return -6 + ((logA + 5) / 5) * 12; }
+        const SHELL_LOGA = Math.log10(A_EQ * 1.5);
+
+        // ============================================================
+        // CHART, 1-bit Figure 2
+        // ============================================================
+        function makeDither() {
+            const c = document.createElement('canvas'); c.width = c.height = 3;
+            const x = c.getContext('2d'); x.fillStyle = inkColor();
+            x.fillRect(0, 0, 1, 1); x.fillRect(1, 1, 1, 1); // ~22% halftone
+            return x.createPattern(c, 'repeat');
+        }
+
+        const markerPlugin = {
+            id: 'markers',
+            afterDatasetsDraw(chart) {
+                const { ctx, chartArea, scales } = chart; if (!scales.x) return;
+                const ink = inkColor();
+                const drawV = (a, label) => {
+                    const x = scales.x.getPixelForValue(a);
+                    if (x < chartArea.left || x > chartArea.right) return;
+                    ctx.save(); ctx.strokeStyle = ink; ctx.globalAlpha = 0.45; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+                    ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
+                    ctx.setLineDash([]); ctx.globalAlpha = 0.8; ctx.fillStyle = ink; ctx.font = '16px Monaco, monospace';
+                    ctx.translate(x + 3, chartArea.bottom - 6); ctx.rotate(-Math.PI / 2); ctx.fillText(label, 0, 0); ctx.restore();
+                };
+                drawV(A_EQ, 'equality'); drawV(A_REC, 'recombination');
+                const aNow = Math.pow(10, ch3SweepLogA), px = scales.x.getPixelForValue(aNow);
+                if (px >= chartArea.left && px <= chartArea.right) {
+                    ctx.save(); ctx.strokeStyle = ink; ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.moveTo(px, chartArea.top); ctx.lineTo(px, chartArea.bottom); ctx.stroke();
+                    ctx.fillStyle = ink; ctx.fillRect(px - 3, chartArea.top, 6, 6); ctx.restore();
+                }
+            }
+        };
+
+        function initChart() {
+            const ctx = document.getElementById('energyChart').getContext('2d');
+            energyChart = new Chart(ctx, {
+                type: 'line',
+                data: { datasets: [
+                    { label: 'Bare power law', data: [], parsing: false, borderWidth: 2, pointRadius: 0, fill: true, tension: 0.3 },
+                    { label: 'With cut-off shell', data: [], parsing: false, borderWidth: 2, borderDash: [6, 4], pointRadius: 0, fill: false, tension: 0.3 }
+                ]},
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    interaction: { mode: 'nearest', intersect: false },
+                    scales: {
+                        x: { type: 'logarithmic', min: A_MIN, max: A_MAX,
+                            title: { display: true, text: 'scale factor a   (left = early universe, right = today)', font: { family: 'Monaco', size: 17 }, padding: { top: 6 } },
+                            ticks: { font: { family: 'Monaco', size: 16 }, callback: v => { const l = Math.log10(v); return Number.isInteger(l) ? '10^' + l : null; } } },
+                        y: { beginAtZero: true, max: 8,
+                            title: { display: true, text: 'share of total energy density (%)', font: { family: 'Monaco', size: 17 } },
+                            ticks: { font: { family: 'Monaco', size: 16 } } }
+                    },
+                    plugins: { legend: { display: false },
+                        tooltip: { titleFont: { family: 'Monaco', size: 15 }, bodyFont: { family: 'Monaco', size: 15 }, padding: 10,
+                            callbacks: { title: i => 'a = ' + i[0].parsed.x.toExponential(1), label: it => it.dataset.label + ': ' + it.parsed.y.toFixed(2) + '%' } } }
+                },
+                plugins: [markerPlugin]
+            });
+            styleChart();
+        }
+
+        // recolor chart for the active theme (1-bit: ink lines, dither fill)
+        function styleChart() {
+            if (!energyChart) return;
+            const ink = inkColor();
+            ditherPattern = makeDither();
+            energyChart.data.datasets[0].borderColor = ink;
+            energyChart.data.datasets[0].backgroundColor = ditherPattern;
+            energyChart.data.datasets[1].borderColor = ink;
+            const sc = energyChart.options.scales;
+            sc.x.grid.color = gridColor(); sc.y.grid.color = gridColor();
+            sc.x.border = { color: ink }; sc.y.border = { color: ink };
+            sc.x.ticks.color = ink; sc.y.ticks.color = ink;
+            sc.x.title.color = ink; sc.y.title.color = ink;
+            energyChart.update('none');
+        }
+
+        function supr() {}
+
+        // ============================================================
+        // APPLY n
+        // ============================================================
+        function applyN(n) {
+            nValue = n;
+            const c2 = document.getElementById('nSliderC2'), c3 = document.getElementById('nSliderC3');
+            if (c2 && Math.abs(parseFloat(c2.value) - n) > 1e-6) c2.value = n.toFixed(1);
+            if (c3 && n >= 3 && n <= 4 && Math.abs(parseFloat(c3.value) - n) > 1e-6) c3.value = n.toFixed(2);
+            document.getElementById('nValueC2').textContent = n.toFixed(1);
+            document.getElementById('nValueC3').textContent = n.toFixed(2);
+            rebuildFog(n); updateVerdict(n);
+            if (energyChart) {
+                const { bare, cut } = buildCurves(n);
+                energyChart.data.datasets[0].data = bare;
+                energyChart.data.datasets[1].data = cut;
+                energyChart.update('none');
+            }
+            const factor = Math.pow(3.1, 4 - n), pct = Math.round((factor - 1) * 100);
+            document.getElementById('distinctC3').innerHTML =
+                `shape evolves by (3.1)^(4-n) = <b>${factor.toFixed(2)}x</b>` +
+                (n >= 3.999 ? ' · standard dark radiation' : ` · about ${pct}% distinct`);
+        }
+
+        function updateVerdict(n) {
+            const el = document.getElementById('verdictC2'), cv = document.getElementById('nValueC2');
+            let head, body, cls = '';
+            if (n <= 3.0) {
+                head = 'Acts like matter'; cls = 'hatch';
+                body = 'At n <= 3 the term dilutes no faster than matter, so it never switches off, lingering long past recombination, where Planck data would rule it out.';
+            } else if (n < 4.0) {
+                head = 'The useful window'; cls = 'highlight';
+                body = `At ${n.toFixed(1)} the contribution dilutes faster than matter but slower than radiation, peaking near matter-radiation equality.` + (n <= 3.8 ? ' Between 3.0 and 3.8 it is mathematically distinct from ordinary dark radiation.' : '');
+            } else {
+                head = 'Standard dark radiation';
+                body = 'At n >= 4 the term scales as a^-4, indistinguishable from the empty-bulk dark radiation already accounted for. The mechanism adds nothing new.';
+            }
+            el.className = 'verdict ' + cls;
+            el.innerHTML = `<span class="v-head">${head}</span>${body}`;
+        }
+
+        function setupSliders() {
+            document.getElementById('nSliderC2').addEventListener('input', e => applyN(parseFloat(e.target.value)));
+            document.getElementById('nSliderC3').addEventListener('input', e => applyN(parseFloat(e.target.value)));
+        }
+
+        // ============================================================
+        // ANIMATION
+        // ============================================================
+        function animate() {
+            const time = Date.now() * 0.001;
+            if (currentChapter === 1) {
+                const cmb = 67.4 + (animating ? Math.sin(time) * 0.05 : 0);
+                document.getElementById('needle1').style.transform = `rotate(${valueToAngle(cmb)}deg)`;
+                document.getElementById('val1').textContent = cmb.toFixed(1) + ' km/s/Mpc';
+                const local = 73.0 + (animating ? Math.sin(time * 9) * 0.35 + Math.sin(time * 3) * 0.2 : 0);
+                document.getElementById('needle2').style.transform = `rotate(${valueToAngle(local)}deg)`;
+                document.getElementById('val2').textContent = local.toFixed(1) + ' km/s/Mpc';
+                document.getElementById('tensionNum').textContent = '≈ ' + (local - cmb).toFixed(1) + ' km/s/Mpc';
+            }
+            if (currentChapter === 2 && ch2Scene) {
+                ch2Controls.update();
+                if (animating) {
+                    ch2BubbleMesh.rotation.y += 0.008; ch2ParticleSystem.rotation.y -= 0.0015; ch2Bulk.rotation.y += 0.0008;
+                    ch2BubbleBaseScale += 0.006; if (ch2BubbleBaseScale > 4.2) ch2BubbleBaseScale = 0.6;
+                }
+                let s = ch2BubbleBaseScale; const useful = nValue > 3.0 && nValue < 4.0;
+                if (useful && s > 1.4 && s < 3.6) { s += (s - 1.4) * 0.5; ch2BubbleMesh.material.opacity = 0.6; }
+                else ch2BubbleMesh.material.opacity = 0.3;
+                ch2BubbleMesh.scale.setScalar(Math.min(s, 4.2));
+                ch2Renderer.render(ch2Scene, ch2Camera);
+            }
+            if (currentChapter === 3 && ch3Scene) {
+                ch3Shell.rotation.z += 0.006; ch3Shell.position.x = logAToX(SHELL_LOGA);
+                ch3SweepLogA += animating ? 0.012 : 0; if (ch3SweepLogA > 0) ch3SweepLogA = -5;
+                ch3Bubble.position.x = logAToX(ch3SweepLogA);
+                const dx = Math.abs(ch3SweepLogA - SHELL_LOGA);
+                if (dx < 0.5) { ch3Bubble.material.opacity = 0.85; ch3Shell.scale.setScalar(1.06); }
+                else { ch3Bubble.material.opacity = 0.4; ch3Shell.scale.setScalar(1.0); }
+                ch3Renderer.render(ch3Scene, ch3Camera);
+                if (animating && energyChart) energyChart.update('none');
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // ============================================================
+        // RESIZE
+        // ============================================================
+        window.addEventListener('resize', () => {
+            if (ch2Camera && ch2Renderer) {
+                const c = document.getElementById('c2-container');
+                ch2Camera.aspect = c.clientWidth / c.clientHeight; ch2Camera.updateProjectionMatrix();
+                ch2Renderer.setSize(c.clientWidth, c.clientHeight); ch2Renderer.render(ch2Scene, ch2Camera);
+            }
+            if (ch3Camera && ch3Renderer) {
+                const c = document.getElementById('c3-container');
+                ch3Camera.aspect = c.clientWidth / c.clientHeight; ch3Camera.updateProjectionMatrix();
+                ch3Renderer.setSize(c.clientWidth, c.clientHeight); ch3Renderer.render(ch3Scene, ch3Camera);
+            }
+            if (energyChart) energyChart.resize();
+        });
+
+        // ============================================================
+        // NAVIGATION
+        // ============================================================
+        function setupNavigation() {
+            document.getElementById('prevBtn').addEventListener('click', () => { if (currentChapter > 1) updateChapter(currentChapter - 1); });
+            document.getElementById('nextBtn').addEventListener('click', () => { if (currentChapter < totalChapters) updateChapter(currentChapter + 1); });
+            document.addEventListener('keydown', e => {
+                if (e.target.tagName === 'INPUT') return;
+                if (e.key === 'ArrowRight' && currentChapter < totalChapters) updateChapter(currentChapter + 1);
+                if (e.key === 'ArrowLeft' && currentChapter > 1) updateChapter(currentChapter - 1);
+            });
+        }
+
+        const TITLES = ['The cosmic speeding ticket', 'The layered bulk', 'Rise, peak, and the cliff', 'The open question'];
+        const CONTENT = [
+            `<p>Two precise "radar guns" clock the universe's expansion and refuse to agree. Ancient light from the cosmic microwave background reads about <strong>67 km/s/Mpc</strong>; nearby stars and supernovae read about <strong>73</strong>.</p><p>The gap is small but stubborn, and the needles will not meet. This is the <strong>Hubble tension</strong>, and resolving it seems to need a hidden burst of energy in the very early universe.</p>`,
+            `<p>Picture our universe as a 3D membrane, a <strong>brane</strong>, floating in a higher-dimensional space called the <strong>bulk</strong>. In the Randall-Sundrum model that bulk is warped, and cosmologists usually treat it as empty.</p><p>But what if it holds matter, layered by a power law where the exponent <strong>n</strong> sets the steepness? Its shadow on our brane scales as <strong>a^-n</strong>, and only a narrow window of n does anything useful. Drag to find it.</p>`,
+            `<p>In the useful window the contribution <span class="good-t">rises through the radiation era and peaks near matter-radiation equality</span>, encouragingly close to where a fix must act.</p><p>The trouble is afterwards. A <span class="warn-t">bare power law dawdles</span>, lingering past recombination where Planck data forbid it. The escape is a <strong>localised shell with a sharp cut-off</strong>: once the brane sweeps past it, the term <span class="good-t">falls off a cliff</span> and normal expansion resumes.</p>`,
+            `<p>So where does this leave a non-physicist with an ice cube and a Friedmann equation?</p><p>Not at a solution, but at a precise, testable question. The honest caveats and the prediction sit beside it. The math works, and the equation remains for anyone to test.</p>`
+        ];
+
+        function updateChapter(ch) {
+            currentChapter = ch;
+            document.getElementById('paneHead').textContent = `Chapter ${ch} of ${totalChapters}`;
+            document.getElementById('chapterTitle').textContent = TITLES[ch - 1];
+            document.getElementById('chapterContent').innerHTML = CONTENT[ch - 1];
+            document.getElementById('prevBtn').disabled = (ch === 1);
+            document.getElementById('nextBtn').disabled = (ch === totalChapters);
+            document.querySelectorAll('#progress span').forEach((s, i) => s.classList.toggle('done', i < ch));
+            document.querySelectorAll('.chapter-container').forEach((el, i) => el.classList.toggle('active', i + 1 === ch));
+            if (ch === 3) { ch3SweepLogA = -5; const clamped = Math.min(4, Math.max(3, nValue)); if (clamped !== nValue) applyN(clamped); }
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 60);
+        }
+    </script>
+</body>
+</html>
